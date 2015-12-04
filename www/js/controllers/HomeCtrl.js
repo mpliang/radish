@@ -29,8 +29,13 @@ app.controller('HomeCtrl', function ($scope, $http) {
 
           L.circle(e.latlng, radius).addTo(map);
         } else {
-          L.marker(e.latlng).addTo(map)
-            .bindPopup("You are traveling " + data.data.speed + " mph heading " + data.data.direction).openPopup();
+          if (data.data.speed > 0) {
+            L.marker(e.latlng).addTo(map)
+              .bindPopup("You are traveling " + data.data.speed + " mph heading " + data.data.direction).openPopup();
+          } else {
+            L.marker(e.latlng).addTo(map)
+              .bindPopup("Oops, it doesn't look like you're moving. Start driving to get your speed! ").openPopup();        
+          }
         }
       }, function (err) {
         console.log(err);
