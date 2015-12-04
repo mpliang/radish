@@ -1,7 +1,6 @@
 'use strict'
 
 app.controller('HomeCtrl', function ($scope, $http) {
-  // var accessToken = 'pk.eyJ1IjoibXBsaWFuZyIsImEiOiJjaWhyOHRpaXYwMDUzdGdtMXZoaGdiOXQ3In0.ktHt0Q9ccE_ahSNzt7tasA';
   var map = L.map('map');
 
   L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6IjZjNmRjNzk3ZmE2MTcwOTEwMGY0MzU3YjUzOWFmNWZhIn0.Y8bhBaUMqFiPrDRW9hieoQ', {
@@ -13,7 +12,6 @@ app.controller('HomeCtrl', function ($scope, $http) {
   }).addTo(map);
 
   function onLocationFound(e) {
-    console.log(e);
     var geojson = {
       'type': 'Location',
       'coordinates': e.latitude + ', ' + e.longitude,
@@ -21,11 +19,10 @@ app.controller('HomeCtrl', function ($scope, $http) {
 
     $http.post('https://radish-backend.herokuapp.com/location', geojson)
       .then(function (data) {
-        console.log('success', data);
         var radius = e.accuracy / 2;
         if (!data.data.speed) {
           L.marker(e.latlng).addTo(map)
-            .bindPopup("You are within " + radius + " meters of this location").openPopup();
+            .bindPopup("Oops, it doesn't look like you're moving. Start driving to get your speed!").openPopup();
 
           L.circle(e.latlng, radius).addTo(map);
         } else {
@@ -34,7 +31,7 @@ app.controller('HomeCtrl', function ($scope, $http) {
               .bindPopup("You are traveling " + data.data.speed + " mph heading " + data.data.direction).openPopup();
           } else {
             L.marker(e.latlng).addTo(map)
-              .bindPopup("Oops, it doesn't look like you're moving. Start driving to get your speed! ").openPopup();        
+              .bindPopup("Oops, it doesn't look like you're moving. Start driving to get your speed!").openPopup();
           }
         }
       }, function (err) {
