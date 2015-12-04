@@ -27,11 +27,10 @@ app.controller('HomeCtrl', function ($scope, $http) {
           L.marker(e.latlng).addTo(map)
             .bindPopup("You are within " + radius + " meters of this location").openPopup();
 
+          L.circle(e.latlng, radius).addTo(map);
         } else {
           L.marker(e.latlng).addTo(map)
             .bindPopup("You are traveling " + data.data.speed + " mph heading " + data.data.direction).openPopup();
-
-          L.circle(e.latlng, radius).addTo(map);
         }
       }, function (err) {
         console.log(err);
